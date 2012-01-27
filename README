@@ -1,0 +1,3 @@
+This project is attemping to create a simple API for VHDL generation in C++. It is intended for use in compilers that generate VHDL.
+
+My purpose for it is to assist in creating FSMs from a specified language.
