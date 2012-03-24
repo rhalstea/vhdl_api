@@ -76,17 +76,28 @@ vhdl::connection_list::~connection_list() {
 
 void vhdl::connection_list::add_connection(vhdl::wire *src, 
 					   vhdl::wire *dest) {
-  // Make sure connection does not already exist
   if (connection_exists(src, dest))
     return;
   
   // Make sure dest is not a source
   assert( is_source(dest) and "A destination cannot be a source");
 
-  // check if source is already valid
+  // FIXME: should I check if destination is already used?
 
-  // if not make new connection
-  vhdl::connection *new_con = new vhdl::connection( src->name() + unique_id(),
+  vhdl::connection *conn;
+  get_connection_with_source(src);
+
+  if (conn != NULL) {// if source exists
+    conn->add_destination(dest);
+    destinations_[dest] = conn
+  }
+  else { // new connection
+    vhdl::connection *new_conn = 
+      new vhdl::connection(src->name() + unique_id(), src, dest);
+
+    sources_[src] = new_conn;
+    destinations_[dest] = new_conn;
+  }
 }
 
 void vhdl::connection_list::add_io_connection(vhdl::wire *src,
@@ -114,4 +125,20 @@ bool vhdl::connection_list::is_source(vhdl::wire *w) {
       return true;
 
   return false;
+}
+
+vhdl::connection* 
+vhdl::connection_list::get_connection_with_source(vhdl::wire *w) {
+  std::map<vhdl::wire*,vhdl::connection*>::iterator src_iter;
+  for (src_iter = sources_.begin(); src_iter != sources_.end(); ++src_iter)
+    if (src_iter->first == w)
+      return src_iter->second;
+
+  for (src_iter = io_sources_.begin(); 
+       src_iter != io_sources_.end(); 
+       ++src_iter)
+    if (src_iter->first == w)
+      return src_iter->second;
+
+  return NULL:
 }

@@ -38,19 +38,20 @@ namespace vhdl {
   class connection_list {
   private:
     // A map for all the sources
-    std::map< vhdl::wire*, vhdl::connection*> sources_;
+    std::map<vhdl::wire*, vhdl::connection*> sources_;
     // A map for all the destinations
-    std::map< vhdl::wire*, vhdl::connection*> destinations_;
+    std::map<vhdl::wire*, vhdl::connection*> destinations_;
     // A counter used to generate unique connection names
     unsigned int unique_name_counter_;
 
     // A map for all io_connection sources
-    std::map< vhdl::wire*, vhdl::connection*> io_sources_;
+    std::map<vhdl::wire*, vhdl::connection*> io_sources_;
     // A map for all io_connection destinations
-    std::map< vhdl::wire*, vhdl::connection*> io_destinations_;
+    std::map<vhdl::wire*, vhdl::connection*> io_destinations_;
 
     bool connection_exists(vhdl::wire *src, vhdl::wire *dest);
     bool is_source(vhdl::wire *w);
+    vhdl::connection *get_connection_with_source(vhdl::wire *w);
 
   public:
     // constructor & destructor
