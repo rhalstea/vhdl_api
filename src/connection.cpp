@@ -1,6 +1,8 @@
 #include "connection.h"
 
 #include <cassert>
+#include <sstream>
+#include <iostream> // remove me
 
 vhdl::connection::connection(std::string name, 
 			     vhdl::wire *src, 
@@ -26,6 +28,10 @@ void vhdl::connection::add_destination(vhdl::wire *dest) {
 }
 
 
+
+std::string vhdl::connection::name() {
+  return signal_->name();
+}
 
 vhdl::wire *vhdl::connection::source() {
   return source_;
@@ -68,6 +74,7 @@ void vhdl::connection::print_name(std::ostream &stream, std::string append) {
 // Connection List Class Functions
 // ----- ----- ----- ----- ----- -----
 vhdl::connection_list::connection_list() {
+  unique_name_counter_ = 0;
 }
 
 vhdl::connection_list::~connection_list() {
@@ -76,23 +83,27 @@ vhdl::connection_list::~connection_list() {
 
 void vhdl::connection_list::add_connection(vhdl::wire *src, 
 					   vhdl::wire *dest) {
+
+}
+
+void vhdl::connection_list::add_io_connection(vhdl::wire *src,
+					      vhdl::wire *dest) {
   if (connection_exists(src, dest))
     return;
+
+  verify_src_and_dest(src, dest);
   
-  // Make sure dest is not a source
-  assert( is_source(dest) and "A destination cannot be a source");
+  assert( dynamic_cast<vhdl::input_wire*>(src) != NULL ||
+	  dynamic_cast<vhdl::output_wire*>(dest) != NULL );
 
-  // FIXME: should I check if destination is already used?
-
-  vhdl::connection *conn;
-  get_connection_with_source(src);
-
-  if (conn != NULL) {// if source exists
+  vhdl::connection *conn = get_connection_with_source(src);
+  
+  if (conn != NULL) { // source already exists
     conn->add_destination(dest);
-    destinations_[dest] = conn
+    destinations_[dest] = conn;
   }
-  else { // new connection
-    vhdl::connection *new_conn = 
+  else { // source does not exist
+    vhdl::connection *new_conn =
       new vhdl::connection(src->name() + unique_id(), src, dest);
 
     sources_[src] = new_conn;
@@ -100,45 +111,89 @@ void vhdl::connection_list::add_connection(vhdl::wire *src,
   }
 }
 
-void vhdl::connection_list::add_io_connection(vhdl::wire *src,
-					      vhdl::wire *dest) {
+vhdl::connection* vhdl::connection_list::get_connection(vhdl::wire *w) {
+  vhdl::connection *conn;
 
+  conn = get_connection_with_source(w);
+  if (conn != NULL)
+    return conn;
+  conn = get_connection_with_destination(w);
+  if (conn != NULL)
+    return conn;
+
+  return NULL;  
+}
+
+std::string vhdl::connection_list::get_connection_name(vhdl::wire *w) {
+  vhdl::connection *conn = get_connection(w);
+
+  if (conn != NULL)
+    return conn->name();
+  else
+    return "";
+}
+
+
+
+
+
+std::string vhdl::connection_list::unique_id() {
+  std::stringstream ss;
+  ss << "_" << unique_name_counter_;
+  
+  ++unique_name_counter_;
+  return ss.str();
+}
+
+void vhdl::connection_list::verify_src_and_dest(vhdl::wire *src,
+						vhdl::wire *dest) {
+  assert( get_connection_with_source(dest) == NULL
+	  and "Destination is already a source");
+  assert( get_connection_with_destination(src) == NULL
+	  and "Source is already a destination");
+  assert( get_connection_with_destination(dest) == NULL
+	  and "Destination already has a source");
 }
 
 bool vhdl::connection_list::connection_exists(vhdl::wire *src,
 					      vhdl::wire *dest) {
-  // check internal connections
-  std::map<vhdl::wire*,vhdl::connection*>::iterator src_iter;
-  for (src_iter = sources_.begin(); src_iter != sources_.end(); ++src_iter)
-    if (src_iter->first == src && src_iter->second->has_destination(dest))
-      return true;
+  vhdl::connection *conn;
 
-  // check io connections (do I really want to do this?)
-
-  return false;
-}
-
-bool vhdl::connection_list::is_source(vhdl::wire *w) {
-  std::map<vhdl::wire*,vhdl::connection*>::iterator src_iter;
-  for (src_iter = sources_.begin(); src_iter != sources_.end(); ++src_iter)
-    if (src_iter->first == w)
-      return true;
+  conn = get_connection_with_source(src);
+  if (conn != NULL && conn->has_destination(dest))
+    return true;
 
   return false;
 }
 
 vhdl::connection* 
 vhdl::connection_list::get_connection_with_source(vhdl::wire *w) {
-  std::map<vhdl::wire*,vhdl::connection*>::iterator src_iter;
-  for (src_iter = sources_.begin(); src_iter != sources_.end(); ++src_iter)
-    if (src_iter->first == w)
-      return src_iter->second;
+  std::map<vhdl::wire*,vhdl::connection*>::iterator conn;
+  std::map<vhdl::wire*,vhdl::connection*>::iterator io_conn;
 
-  for (src_iter = io_sources_.begin(); 
-       src_iter != io_sources_.end(); 
-       ++src_iter)
-    if (src_iter->first == w)
-      return src_iter->second;
+  conn = sources_.find(w);
+  io_conn = io_sources_.find(w);
 
-  return NULL:
+  if (conn != sources_.end())
+    return conn->second;
+  else if (io_conn != io_sources_.end())
+    return io_conn->second;
+  else
+    return NULL;
+}
+
+vhdl::connection*
+vhdl::connection_list::get_connection_with_destination(vhdl::wire *w) {
+  std::map<vhdl::wire*,vhdl::connection*>::iterator conn;
+  std::map<vhdl::wire*,vhdl::connection*>::iterator io_conn;
+
+  conn = destinations_.find(w);
+  io_conn = io_destinations_.find(w);
+
+  if (conn != destinations_.end())
+    return conn->second;
+  else if (io_conn != io_destinations_.end())
+    return io_conn->second;
+  else
+    return NULL;
 }

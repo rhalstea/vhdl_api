@@ -23,6 +23,7 @@ namespace vhdl {
     void add_destination(vhdl::wire *dest);
 
     vhdl::wire *source();
+    std::string name();
     unsigned size();
     vhdl::wire *destination(unsigned pos);
     vhdl::wire *operator[](unsigned pos);
@@ -37,21 +38,22 @@ namespace vhdl {
   
   class connection_list {
   private:
-    // A map for all the sources
+    // A map for all the sources and destinations
     std::map<vhdl::wire*, vhdl::connection*> sources_;
-    // A map for all the destinations
     std::map<vhdl::wire*, vhdl::connection*> destinations_;
-    // A counter used to generate unique connection names
-    unsigned int unique_name_counter_;
-
-    // A map for all io_connection sources
+    // A map for all io_connection sources and destinations
     std::map<vhdl::wire*, vhdl::connection*> io_sources_;
-    // A map for all io_connection destinations
     std::map<vhdl::wire*, vhdl::connection*> io_destinations_;
 
+    // A counter used to generate unique connection names
+    unsigned int unique_name_counter_;
+    std::string unique_id();
+
+
+    void verify_src_and_dest(vhdl::wire *src, vhdl::wire *dest);
     bool connection_exists(vhdl::wire *src, vhdl::wire *dest);
-    bool is_source(vhdl::wire *w);
     vhdl::connection *get_connection_with_source(vhdl::wire *w);
+    vhdl::connection *get_connection_with_destination(vhdl::wire *w);
 
   public:
     // constructor & destructor
@@ -67,8 +69,10 @@ namespace vhdl {
     //   if source already exists must be input to input
     void add_io_connection(vhdl::wire *src, vhdl::wire *dest);
 
-    // a search that returns the name of a wire
     // a search that returns a connection
+    vhdl::connection *get_connection(vhdl::wire *w);
+    // a search that returns the name of a wire
+    std::string get_connection_name(vhdl::wire *w);
     
 
     // a function to get a list of all connections 
