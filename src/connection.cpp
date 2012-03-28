@@ -83,7 +83,31 @@ vhdl::connection_list::~connection_list() {
 
 void vhdl::connection_list::add_connection(vhdl::wire *src, 
 					   vhdl::wire *dest) {
+  if (dynamic_cast<vhdl::input_wire*>(src) != NULL ||
+      dynamic_cast<vhdl::output_wire*>(dest) != NULL) {
+    add_io_connection(src, dest);
+    return;
+  }
 
+  if (connection_exists(src, dest))
+    return;
+
+  verify_src_and_dest(src, dest);
+
+  vhdl::connection *conn = get_connection_with_source(src);
+  
+  if (conn != NULL) { // source already exists
+    conn->add_destination(dest);
+    destinations_[dest] = conn;
+  }
+  else { // source does not exist
+    vhdl::connection *new_conn =
+      new vhdl::connection(src->name() + unique_id(), src, dest);
+
+    sources_[src] = new_conn;
+    destinations_[dest] = new_conn;
+  }
+  
 }
 
 void vhdl::connection_list::add_io_connection(vhdl::wire *src,
@@ -100,14 +124,14 @@ void vhdl::connection_list::add_io_connection(vhdl::wire *src,
   
   if (conn != NULL) { // source already exists
     conn->add_destination(dest);
-    destinations_[dest] = conn;
+    io_destinations_[dest] = conn;
   }
   else { // source does not exist
     vhdl::connection *new_conn =
       new vhdl::connection(src->name() + unique_id(), src, dest);
 
-    sources_[src] = new_conn;
-    destinations_[dest] = new_conn;
+    io_sources_[src] = new_conn;
+    io_destinations_[dest] = new_conn;
   }
 }
 
@@ -147,6 +171,12 @@ std::string vhdl::connection_list::unique_id() {
 
 void vhdl::connection_list::verify_src_and_dest(vhdl::wire *src,
 						vhdl::wire *dest) {
+
+  assert( dynamic_cast<vhdl::output_wire*>(src) == NULL
+	  and "Source cannot be an output wire");
+  assert( dynamic_cast<vhdl::input_wire*>(dest) == NULL
+	  and "Destination cannot be an input wire");
+
   assert( get_connection_with_source(dest) == NULL
 	  and "Destination is already a source");
   assert( get_connection_with_destination(src) == NULL
