@@ -3,38 +3,29 @@
 
 #include <ostream>
 #include <vector>
-#include <map>
 #include <string>
 
-#include "ports.h"
+#include "connection.h"
+#include "wire.h"
 
 namespace vhdl {
   
   class module {
-  protected:
-    std::string name;
-    std::vector<vhdl::ports *> io_wires;
-
-    // can write the body from file
-    std::string body_file_name;
-
   private:
-    void print_ports(std::ostream &stream);
-    void print_architecture_from_file(std::ostream &stream);
+    std::string name_;
+    std::string body_file_name_;
+    vhdl::connection_list connections_;
 
   public:
     module(std::string name);
 
     void print(std::ostream &stream);
-    void print_component_declaration(std::ostream &stream);
 
     void set_name(std::string name);
     void set_body(std::string file_name);
-    void add_port(vhdl::ports *to_add);
     
     std::string get_name();
-    std::vector<vhdl::ports *> get_ports();
-
+    std::vector<vhdl::wire *> get_io_ports();
   };
 
 }

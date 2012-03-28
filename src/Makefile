@@ -1,6 +1,6 @@
 GCC = g++
 GCC_FLAGS = -fPIC
-OBJECTS = wire.o connection.o #ports.o module.o
+OBJECTS = wire.o connection.o module.o
 
 OS_TYPE = $(shell uname)
 
