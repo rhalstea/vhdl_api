@@ -5,7 +5,6 @@
 using namespace vhdl;
 
 int main() {
-
   connection_list my_connections;
 
   input_wire *clk = new input_wire("clk", 1);
@@ -21,7 +20,7 @@ int main() {
 
   my_connections.add_io_connection(clk, tmp_0);
   my_connections.add_io_connection(clk, tmp_1);
-  my_connections.add_io_connection(rst, tmp_2);
+  my_connections.add_connection(rst, tmp_2);
 
   my_connections.add_connection(src_0, dest_0);
   my_connections.add_connection(src_0, dest_1);
