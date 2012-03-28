@@ -74,7 +74,6 @@ namespace vhdl {
     // a search that returns the name of a wire
     std::string get_connection_name(vhdl::wire *w);
     
-
     // a function to get a list of all connections 
   };
 

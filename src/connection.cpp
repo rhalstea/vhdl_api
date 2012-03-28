@@ -2,7 +2,6 @@
 
 #include <cassert>
 #include <sstream>
-#include <iostream> // remove me
 
 vhdl::connection::connection(std::string name, 
 			     vhdl::wire *src, 
@@ -171,7 +170,6 @@ std::string vhdl::connection_list::unique_id() {
 
 void vhdl::connection_list::verify_src_and_dest(vhdl::wire *src,
 						vhdl::wire *dest) {
-
   assert( dynamic_cast<vhdl::output_wire*>(src) == NULL
 	  and "Source cannot be an output wire");
   assert( dynamic_cast<vhdl::input_wire*>(dest) == NULL
