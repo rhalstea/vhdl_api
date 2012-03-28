@@ -1,4 +1,4 @@
-VHDL_INSTALL_PATH = /home/rhalstea/programs/vhdl_api
+VHDL_INSTALL_PATH = /Users/rhalstea/git/vhdl_api
 
 GCC 	  = g++
 GCC_FLAGS = 

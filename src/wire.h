@@ -23,7 +23,7 @@ namespace vhdl {
   };
 
 
-  class input_wire : wire {
+  class input_wire : public wire {
   public:
     input_wire(std::string name, unsigned int size);
     void print(std::ostream &stream, std::string append = "");
