@@ -1,0 +1,18 @@
+
+
+INCLUDE_FILES = $(join $(INCLUDE_DIR), $(INCLUDE_SUB_DIR))
+
+VPATH = $(INCLUDE_FILES) 
+
+SOURCES := $(shell find ./ -name '*.cpp')
+OBJECTS := $(patsubst %.cpp, %.o, $(SOURCES))
+
+all: object_dir $(OBJECTS)
+
+object_dir:
+	@mkdir -p $(OBJECT_DIR)
+
+%.o: %.cpp %.h
+	$(CXX) $(CXX_FLAGS) -I$(INCLUDE_FILES) -c -o $(OBJECT_DIR)/$@ $<
+
+# add rules for cleaning out a directory
