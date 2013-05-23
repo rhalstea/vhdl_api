@@ -22,4 +22,4 @@ object_dir:
 
 # add rules for cleaning out a directory
 clean:
-	rm -rf $(LIB_FILE)*
+	rm -rf $(LIB_FILE)* $(OBJECT_FILES)
