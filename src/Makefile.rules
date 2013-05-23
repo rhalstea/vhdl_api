@@ -1,18 +1,25 @@
 
+INCLUDE_FILES  = $(join $(INCLUDE_DIR)/, $(INCLUDE_SUB_DIR))
+VPATH          = $(INCLUDE_FILES) 
 
-INCLUDE_FILES = $(join $(INCLUDE_DIR), $(INCLUDE_SUB_DIR))
+SOURCES        := $(shell find ./ -name '*.cpp')
+OBJECTS        := $(patsubst %.cpp, %.o, $(SOURCES))
 
-VPATH = $(INCLUDE_FILES) 
+OBJECT_FILES   = $(join $(OBJECT_DIR)/, $(OBJECTS))
+LIB_FILE       = $(OBJECT_DIR)/lib$(LIB_NAME)
 
-SOURCES := $(shell find ./ -name '*.cpp')
-OBJECTS := $(patsubst %.cpp, %.o, $(SOURCES))
+
 
 all: object_dir $(OBJECTS)
+	$(CXX) $(SHARED_LIB_FLAGS) $(OBJECT_FILES) -o $(LIB_FILE).so.0
+	ln -fs $(LIB_FILE).so.0 $(LIB_FILE).so
 
 object_dir:
 	@mkdir -p $(OBJECT_DIR)
 
 %.o: %.cpp %.h
-	$(CXX) $(CXX_FLAGS) -I$(INCLUDE_FILES) -c -o $(OBJECT_DIR)/$@ $<
+	$(CXX) $(CXX_FLAGS) -c -I$(INCLUDE_FILES) -c -o $(OBJECT_DIR)/$@ $<
 
 # add rules for cleaning out a directory
+clean:
+	rm -rf $(LIB_FILE)*
