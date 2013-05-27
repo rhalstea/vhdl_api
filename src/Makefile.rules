@@ -5,7 +5,7 @@ VPATH          = $(INCLUDE_FILES)
 SOURCES        := $(shell find ./ -name '*.cpp')
 OBJECTS        := $(patsubst %.cpp, %.o, $(SOURCES))
 
-OBJECT_FILES   = $(join $(OBJECT_DIR)/, $(OBJECTS))
+OBJECT_FILES   = $(addprefix $(OBJECT_DIR)/, $(OBJECTS))
 LIB_FILE       = $(OBJECT_DIR)/lib$(LIB_NAME)
 
 
@@ -19,6 +19,11 @@ object_dir:
 
 %.o: %.cpp %.h
 	$(CXX) $(CXX_FLAGS) -c -I$(INCLUDE_FILES) -c -o $(OBJECT_DIR)/$@ $<
+
+debug:
+	@echo $(OBJECT_DIR)
+	@echo $(OBJECTS)
+	@echo $(OBJECT_FILES)
 
 # add rules for cleaning out a directory
 clean:
