@@ -12,7 +12,7 @@ LIB_FILE       = $(OBJECT_DIR)/lib$(LIB_NAME)
 
 all: object_dir $(OBJECTS)
 	$(CXX) $(SHARED_LIB_FLAGS) $(OBJECT_FILES) -o $(LIB_FILE).so.0
-	ln -fs $(LIB_FILE).so.0 $(LIB_FILE).so
+	ln -fs $(LIB_FILE).so.0 $(LIB_FILE).dylib
 
 object_dir:
 	@mkdir -p $(OBJECT_DIR)
