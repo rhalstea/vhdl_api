@@ -40,3 +40,21 @@ void add::print(std::ostream &stream) {
    _rhs->print(stream);
    stream << ")";
 }
+
+// ----- ----- ----- ----- ----- -----
+// ----- ----- ----- ----- ----- -----
+
+subtract::subtract(expression *lhs, expression *rhs) :
+   _lhs(lhs), _rhs(rhs) {}
+
+subtract::~subtract() {
+   // nothing to do yet
+}
+
+void subtract::print(std::ostream &stream) {
+   stream << "(";
+   _lhs->print(stream);
+   stream << " - ";
+   _rhs->print(stream);
+   stream << ")";
+}

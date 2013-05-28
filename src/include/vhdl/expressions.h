@@ -29,8 +29,22 @@ namespace vhdl {
          vhdl::expression *_rhs;
 
       public:
-         add( vhdl::expression *lhs, vhdl::expression *rhs);
+         add(vhdl::expression *lhs, vhdl::expression *rhs);
          ~add();
+
+         virtual void print(std::ostream &stream);
+   };
+
+   class subtract : public expression {
+      private:
+
+      protected:
+         vhdl::expression *_lhs;
+         vhdl::expression *_rhs;
+
+      public:
+         subtract(vhdl::expression *lhs, vhdl::expression *rhs);
+         ~subtract();
 
          virtual void print(std::ostream &stream);
    };

@@ -22,21 +22,30 @@ int main() {
    test_2->print(std::cout);
    std::cout << std::endl;
 
-   // Test 3: chain expressions
+   // Test 3: subtract expression
    std::cout << std::endl
              << std::endl
-             << "TEST 3: chaining expressions together\n";
-   vhdl::add *test_3a = new vhdl::add(new vhdl::expression(sig_0),
-                                      test_2);
-   vhdl::add *test_3b = new vhdl::add(test_2,
-                                      new vhdl::expression(sig_0));
-   vhdl::add *test_3c = new vhdl::add(test_3a, test_3b);
+             << "TEST 3: the subtract expression\n";
+   vhdl::subtract *test_3 = new vhdl::subtract(new vhdl::expression(sig_0),
+                                               new vhdl::expression(sig_1));
+   test_3->print(std::cout);
+   std::cout << std::endl;
 
-   test_3a->print(std::cout);
+   // Test 4: chain expressions
+   std::cout << std::endl
+             << std::endl
+             << "TEST 4: chaining expressions together\n";
+   vhdl::add *test_4a = new vhdl::add(new vhdl::expression(sig_0),
+                                      test_2);
+   vhdl::add *test_4b = new vhdl::add(test_3,
+                                      new vhdl::expression(sig_0));
+   vhdl::add *test_4c = new vhdl::add(test_4a, test_4b);
+
+   test_4a->print(std::cout);
    std::cout << std::endl;
-   test_3b->print(std::cout);
+   test_4b->print(std::cout);
    std::cout << std::endl;
-   test_3c->print(std::cout);
+   test_4c->print(std::cout);
    std::cout << std::endl;
 
    return 0;
