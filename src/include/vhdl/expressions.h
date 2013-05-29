@@ -31,8 +31,9 @@ namespace vhdl {
       public:
          add(vhdl::expression *lhs, vhdl::expression *rhs);
          ~add();
-
          virtual void print(std::ostream &stream);
+
+         virtual unsigned num_bits();
    };
 
    class subtract : public expression {
@@ -45,8 +46,9 @@ namespace vhdl {
       public:
          subtract(vhdl::expression *lhs, vhdl::expression *rhs);
          ~subtract();
-
          virtual void print(std::ostream &stream);
+
+         virtual unsigned num_bits();
    };
 }
 
