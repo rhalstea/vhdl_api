@@ -2,20 +2,34 @@
 #define __VHDL_STATEMENTS_H__
 
 #include <string>
-#include <ostraem>
+#include <ostream>
 
 #include "signals.h"
+#include "expressions.h"
 
 namespace vhdl {
    class statement {
       protected:
-         statement(vhdl::signal *dest);
+         statement();
+         statement(vhdl::signal *dest, vhdl::expression *src);
+         vhdl::signal      *_destination;
+         vhdl::expression  *_source;
 
       public:
          virtual ~statement();
-         virtual void pirnt(std::ostream &stream, std::string append = "");
+         virtual void print(std::ostream &stream) = 0;
    };
 
+   class assignmentStatement : public statement {
+      private:
+
+      protected:
+
+      public:
+         assignmentStatement(vhdl::signal *dest, vhdl::expression *src);
+         ~assignmentStatement();
+         virtual void print(std::ostream &stream);
+   };
 }
 
 #endif
