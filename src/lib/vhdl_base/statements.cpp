@@ -4,11 +4,7 @@ using namespace vhdl;
 
 // ----- ----- ----- ----- ----- -----
 // ----- ----- ----- ----- ----- -----
-statement::statement() :
-   _destination(NULL), _source(NULL) {}
-
-statement::statement(signal *dest, expression *src) :
-   _destination(dest), _source(src) {}
+statement::statement() {}
 
 statement::~statement() {
    // nothing to do yet
@@ -16,8 +12,10 @@ statement::~statement() {
 
 // ----- ----- ----- ----- ----- -----
 // ----- ----- ----- ----- ----- -----
-assignmentStatement::assignmentStatement(signal *dest, expression *src) :
-   statement(dest, src) {}
+assignmentStatement::assignmentStatement(signal *dest, expression *src) {
+   _destination = dest;
+   _source = src;
+}
 
 assignmentStatement::~assignmentStatement() {
    // nothing to do yet
@@ -30,3 +28,6 @@ void assignmentStatement::print(std::ostream &stream) {
    _source->print(stream);
    stream << ";";
 }
+
+// ----- ----- ----- ----- ----- -----
+// ----- ----- ----- ----- ----- -----
