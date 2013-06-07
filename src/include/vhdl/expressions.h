@@ -18,7 +18,6 @@ namespace vhdl {
          virtual void print(std::ostream &stream);
 
          virtual unsigned num_bits();
-
    };
 
    class add : public expression {

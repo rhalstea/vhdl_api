@@ -11,9 +11,6 @@ namespace vhdl {
    class statement {
       protected:
          statement();
-         statement(vhdl::signal *dest, vhdl::expression *src);
-         vhdl::signal      *_destination;
-         vhdl::expression  *_source;
 
       public:
          virtual ~statement();
@@ -24,6 +21,8 @@ namespace vhdl {
       private:
 
       protected:
+         vhdl::signal      *_destination;
+         vhdl::expression  *_source;
 
       public:
          assignmentStatement(vhdl::signal *dest, vhdl::expression *src);
